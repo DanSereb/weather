@@ -286,12 +286,12 @@ class IdwIterative():
 
                 # calculate IDW weights
                 weights = calc_grid_weights(distances, self.ROI)
+                weights = weights * self.use_gauges
+                weights[cml_i, :] = 0.0  # remove weights for current cml
+                weights[weights < weights.max()/100.0] = 0.0
 
                 # find the indices of cmls in the current cml's ROI
-                weights = weights * self.use_gauges
                 cmls_in_ROI = (weights.sum(axis=1) > 0.0)
-                # gauges_in_ROI = np.zeros(weights.shape, dtype=bool)
-                # gauges_in_ROI[cmls_in_ROI,:] = True
                 gauges_in_ROI = (weights > 0.0)
 
                 # exclude current cml from all further calculations
